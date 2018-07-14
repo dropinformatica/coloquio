@@ -18,6 +18,9 @@
   <link rel="stylesheet" href="slick-1.8.1/slick/slick.css">
   <link rel="stylesheet" href="slick-1.8.1/slick/slick-theme.css">
 
+
+  <!-- <script src="js/app.js"></script> -->
+
   <!-- fonts -->
 
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
@@ -42,6 +45,9 @@
                 <a href="javascript:;">Home</a>
               </li>
               <li>
+                <a href="javascript:;">Informações</a>
+              </li>
+              <li>
                 <a href="javascript:;">Programação</a>
               </li>
               <li>
@@ -50,15 +56,24 @@
               <li>
                 <a href="javascript:;">Contato</a>
               </li>
+              <li>
+                <a href="https://facebook.com/direitoerazao" target="_blank">
+                  <i class="fab fa-facebook"></i>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
       </div>
       <div class="info">
         <div class="container">
+
           <div class="titulo">
-            <h1 class="wow fadeInDownBig">VIII Colóquio Direito, Argumentação e Normatividade 2018
+            <h1 class="wow fadeInDownBig">VIII Colóquio de Direito PUC-MG
             </h1>
+            <h5 class="wow fadeInDownBig">Oitavo Colóquio de Direito, Argumentação e
+                Normatividade -
+                2018</h5>
 
             <!-- <h3>05/08/2018 às 19:00</h3> -->
 
@@ -66,21 +81,39 @@
           <button class="btn-titulo wow fadeInUp" data-wow-delay="0.6s">
             INFORMAÇÕES
           </button>
+          <button class="btn-enviar wow fadeInUp" data-wow-delay="0.6s">
+            ENVIAR ARTIGO
+          </button>
         </div>
       </div>
     </div>
   </div>
+
+  <div class="informacoes">
+    <div class="container">
+      <div class="foto-informacoes">
+        <img src="img/law.png">
+      </div>
+      <div class="texto-informacoes">
+        <h3>Informações gerais</h3>
+        <p>O Colóquio Será realizado nos dias 05 e 06 de setembro de 2018, de 08:00 as 12:00, 15:00 as 18:00 e 19:00 as 22:00,
+          no Auditório II do Prédio 5 do Campus Coração Eucarístico da PUC Minas, conforme programa abaixo. O público alvo
+          é constituído por estudantes de Graduação, Pós-Graduação, pesquisadores e profissionais da área do Direito, bem
+          como das ciências Humanas e Sociais.</p>
+        <button class="btn-informacoes">
+          EDITAL
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+
   <div class="programacao">
     <div class="container">
       <h1>
         <b>Programação</b>
       </h1>
-
-      <p>O Colóquio Será realizado nos dias 05 e 06 de setembro de 2018, de 08:00 as 12:00, 15:00 as 18:00 e 19:00 as 22:00,
-        no Auditório II do Prédio 5 do Campus Coração Eucarístico da PUC Minas, conforme programa abaixo. O público alvo
-        é constituído por estudantes de Graduação, Pós-Graduação, pesquisadores e profissionais da área do Direito, bem como
-        das ciências Humanas e Sociais.</p>
-
       <button class="btn-info-palestras cinco">
         05/09
       </button>
@@ -90,6 +123,7 @@
       <button class="btn-info-palestras todas">
         Todas
       </button>
+
 
       <div class="slide-palestra">
 
@@ -220,12 +254,11 @@
         </div>
       </div>
       <!-- dia 5 -->
-    </div>
 
-    <button class="btn-info-palestras">
-      DOWNLOAD
-    </button>
-  </div>
+      <button class="btn-info-palestras">
+        DOWNLOAD
+      </button>
+    </div>
   </div>
   <div class="ingressos">
     <div class="row">
@@ -236,26 +269,31 @@
     </div>
   </div>
 
-  <div class="inscricao">
+  <div id="app" class="inscricao">
+
     <div class="container">
 
       <div class="row">
         <div class="col-6">
-          <div class="formulario">
+          <div class="formulario wow fadeInLeft" data-wow-delay="0.6s">
             <p>Todos os campos são obrigatórios</p>
-            <form action="">
-              <input type="text" class="input-inscricao" placeholder="Nome">
-              <input type="text" class="input-inscricao" placeholder="Email">
-              <input type="text" class="input-inscricao" placeholder="Telefone">
+            <form>
+              <input type="text" class="input-inscricao" placeholder="Nome" v-model="nome">
+              <input type="text" class="input-inscricao" placeholder="Email" v-model="email">
+              <input type="text" class="input-inscricao" placeholder="Telefone" v-model="telefone">
+
             </form>
-            <button class="btn-inscricao">
+            <button class="btn-inscricao" @click="enviar()">
               ENVIAR
             </button>
+            {{msg}}
+
+
           </div>
         </div>
         <div class="col-6">
           <div class="info-inscricao">
-            <img src="img/pay.jpg" class="img-thumbnail">
+            <img src="img/pay.jpg" class="img-thumbnail wow fadeInRight" data-wow-delay="0.6s">
           </div>
         </div>
       </div>
@@ -268,6 +306,8 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/scripts.js"></script>
   <script src="js/wow.min.js"></script>
+  <script src="js/vue.js"></script>
+  <script src="js/request.js"></script>
   <script>
     new WOW().init();
   </script>
@@ -289,6 +329,35 @@
       });
     })
   </script>
+
+  <script>
+
+    var app = new Vue({
+      el: "#app",
+      data: {
+        debug: true,
+        nome: '',
+        email: '',
+        telefone: '',
+        msg: ''
+      },
+      methods: {
+        enviar: function () {
+          this.$http.post('http://localhost:3000/form', {
+            nome: this.nome,
+            email: this.email,
+            telefone: this.telefone
+          }).then(function (response) {
+            this.msg = response.body.msg;
+            console.log(response);
+          })
+        }
+      }
+    })
+
+  </script>
+
+
 </body>
 
 </html>
